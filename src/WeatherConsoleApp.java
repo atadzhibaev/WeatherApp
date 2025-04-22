@@ -1,98 +1,101 @@
-//-----NOTE  - THIS CODE WILL NOT COMPILE AND IS JUST
-//MEANT AS AN EXAMPLE FOR YOU TO USE TO GET STARTED.
-//PLEASE DO NOT SUBMIT THIS CODE IN YOUR FINAL PROJECT,
-//HOWEVER USE IT TO GENERATE IDEAS. YOU MAY USE THE METHOD(S) BELOW
-
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;//Norfolk NE Lat & Long (CHANGE AS YOU WISH)
-import java.nio.charset.StandardCharsets;
+import java.net.HttpURLConnection;
+import java.net.InetAddress;
+import java.net.URL;
+import java.util.Scanner;
+import java.util.regex.Pattern;
 
-static final double latitude = 42.0285;
-static final double longitude = -97.4170;
+import org.json.JSONObject;
+import org.json.JSONArray;
 
-// String use for API Request
-static String urlString = String.format("https://api.open-meteo.com/v1/forecast?latitude=%f&longitude=%f&current_weather=true", latitude, longitude);
+public class WeatherConsoleApp {
 
+    // Regex for US Zip Code
+    private static final String ZIP_CODE_REGEX = "^[0-9]{5}(?:-[0-9]{4})?$";
 
-public static <JSONObject> void main(String[] args) {
-    try {
-        URL url = new URL(urlString);
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("GET");
+    public static void main(String[] args) {
+        try {
+            InetAddress localhost = InetAddress.getLocalHost();
+//            System.out.println("IP Address of your device: " + localhost.getHostAddress());
+//            String ip = "8.8.8.8";
+            URL url = new URL("http://ip-api.com/json/" + localhost.getHostAddress());
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
 
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(conn.getInputStream())
+            );
+            String inputLine;
+            StringBuilder response = new StringBuilder();
+
+            while ((inputLine = in.readLine()) != null)
+                response.append(inputLine);
+            in.close();
+
+            System.out.println("Location Info: " + response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter a U.S. Zip Code: ");
+        String zipCode = scanner.nextLine();
+
+        if (!Pattern.matches(ZIP_CODE_REGEX, zipCode)) {
+            System.out.println("Invalid Zip Code Format!");
+            return;
+        }
+
+        try {
+            // Step 1: Get Coordinates
+            String zipApiUrl = "https://api.zippopotam.us/us/" + zipCode;
+            String zipResponse = fetchData(zipApiUrl);
+
+            JSONObject zipJson = new JSONObject(zipResponse);
+            JSONArray places = zipJson.getJSONArray("places");
+            JSONObject place = places.getJSONObject(0);
+            double latitude = Double.parseDouble(place.getString("latitude"));
+            double longitude = Double.parseDouble(place.getString("longitude"));
+
+            System.out.printf("Coordinates for %s: Lat=%.4f, Lon=%.4f%n", zipCode, latitude, longitude);
+
+            // Step 2: Get Weather Data
+            String weatherApiUrl = String.format(
+                    "https://api.open-meteo.com/v1/forecast?latitude=%.4f&longitude=%.4f&current_weather=true",
+                    latitude, longitude
+            );
+            String weatherResponse = fetchData(weatherApiUrl);
+            JSONObject weatherJson = new JSONObject(weatherResponse);
+            JSONObject currentWeather = weatherJson.getJSONObject("current_weather");
+
+            double temperature = currentWeather.getDouble("temperature");
+            double windSpeed = currentWeather.getDouble("windspeed");
+            String conditionCode = currentWeather.get("weathercode").toString(); // Could be mapped to a description
+
+            // Step 3: Display Results
+            System.out.println("Weather Information:");
+            System.out.printf("Temperature: %.1f°C%n", temperature);
+            System.out.printf("Wind Speed: %.1f km/h%n", windSpeed);
+            System.out.println("Weather Code: " + conditionCode);
+
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    private static String fetchData(String apiUrl) throws Exception {
+        HttpURLConnection connection = (HttpURLConnection) new URL(apiUrl).openConnection();
+        connection.setRequestMethod("GET");
+
+        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         String inputLine;
-        StringBuilder response = new StringBuilder();
+        StringBuilder fullResponse = new StringBuilder();
 
         while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
+            fullResponse.append(inputLine);
         }
         in.close();
-
-// Parse the JSON respons
-        JSONObject jsonResponse = new JSONObject(response.toString());
-        JSONObject currentWeather = jsonResponse.getJSONObject("current_weather");
-
-// Calls to API
-        double temperatureCelsius = currentWeather.getDouble("temperature");
-        int isDayOrNight = currentWeather.getInt("is_day");
-        double windDirection = currentWeather.getDouble("winddirection");
-        double windSpeed = currentWeather.getDouble("windspeed");
-
-// Sout json data
-        System.out.println(currentWeather.toString());
-
-// Convert Celsius to Fahrenheit
-        //double temperatureFahrenheit = getTemperatureFahrenheit(temperatureCelsius);
-
-// Display Output
-        System.out.println("Current Temperature in Norfolk, NE: " + temperatureCelsius + "\u00B0C"); //MAY NOT LOOK RIGHT IN YOUR CONSOLE (UTF-8 ENCODINGS)
-        //System.out.println("Current Temperature in Norfolk, NE: " + temperatureFahrenheit + "\u00B0F"); //MAY NOT
-        // LOOK RIGHT IN YOUR CONSOLE (UTF-8 ENCODINGS)
-
-//--JUST A SIMPLE EXAMPLE, PLEASE ENHANCE THIS
-// Check if it's day or night out 0 = night, 1 = day
-        if (isDayOrNight == 0) {
-            System.out.println("It's Night time");
-        }
-        else {
-            System.out.println("It's Day time");
-        }
-
-        //---CHECK OUT THE METHOD BELOW FOR CALC WIND DIRECTION. YOU MAY COPY VERBATIM!
-        // Check wind direction
-        System.out.println("Wind Direction is: " + getCompassDirection(windDirection));
-        //System.out.println("Current Wind Speed in Norfolk, NE: " + convertKilometersPerHour_MilesPerHour(windSpeed));
-
-
-    } catch (Exception e) {
-        e.printStackTrace();
+        return fullResponse.toString();
     }
 }
-
-//                    else {
-//                            System.out.println("Sorry, the latitude or longitude is not in the correct format or is an invalid number.");
-//        }
-//
-//                }
-
-// Method to convert temp from celsius to fahrenheit
-//BUILD THIS METHOD IF YOU WOULD LIKE TO USE IT
-
-// Method to convert degrees (angles) to wind direction
-private static String getCompassDirection(double angle){
-    String[] directions = {"North","Northeast","East","Southeast","South","Southeast","West","Northwest","North"};
-    return directions[(int)Math.round(((angle % 360) / 45))];
-}
-
-// Convert from km/h to MPH
-//fill out below
-
-// Validate latitude and longitude ranges using boolean method returns
-
-//BUILD MANY MORE METHODS AS YOU SEE SUITED. NOTE, YOU SHOULD CREATE A SEPERATE CLASS FOR THESE
-//STATIC METHODS!
-
 
