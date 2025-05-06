@@ -179,7 +179,7 @@ public class WeatherViewController {
 
 
         //code to turn arrow
-        wind_direction_img.setRotate(weather.getWind_direction() + 270);
+        wind_direction_img.setRotate(weather.getWind_direction() + 70);
 
         //setting default values of weather data
         windspeed = weather.getWindspeed();
