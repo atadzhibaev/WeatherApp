@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -9,39 +12,74 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="572.0" prefWidth="878.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="WeatherViewController">
+<AnchorPane prefHeight="572.0" prefWidth="889.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="WeatherViewController">
    <children>
       <ImageView fitHeight="700.0" fitWidth="889.0" layoutY="-24.0" pickOnBounds="true">
          <image>
-            <Image url="@images/DALL·E-2025-04-20-13.09.jpg" />
+            <Image url="@images/cyangradient.jpg" />
          </image>
       </ImageView>
-      <ImageView fitHeight="19.0" fitWidth="28.0" layoutX="856.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@images/blue-location-icon-26.png" />
-         </image>
-      </ImageView>
-      <Label layoutX="645.0" layoutY="54.0" text="City, State" textFill="WHITE">
+      <Label fx:id="location_lbl" alignment="CENTER" layoutX="497.0" layoutY="54.0" prefHeight="45.0" prefWidth="293.0" text="City, State" textAlignment="CENTER" textFill="WHITE">
          <font>
-            <Font size="20.0" />
+            <Font name="System Bold Italic" size="30.0" />
          </font>
       </Label>
-      <Label layoutX="77.0" layoutY="33.0" prefHeight="17.0" prefWidth="137.0" text="Clear Sky" textFill="WHITE" />
-      <Label layoutX="97.0" layoutY="58.0" text="10 `C" textFill="WHITE">
+      <Label fx:id="temp_lbl" layoutX="135.0" layoutY="40.0" text="10 `C" textFill="WHITE">
+         <font>
+            <Font size="50.0" />
+         </font>
+      </Label>
+      <ImageView fx:id="main_weather_icon" fitHeight="87.0" fitWidth="92.0" layoutX="35.0" layoutY="33.0" pickOnBounds="true" preserveRatio="true" />
+      <VBox fx:id="WeeklyForecast" layoutX="645.0" layoutY="156.0" prefHeight="412.0" prefWidth="236.0" />
+      <ScrollPane fx:id="HourlyScroll" fitToHeight="true" hbarPolicy="ALWAYS" layoutX="14.0" layoutY="156.0" prefHeight="160.0" prefWidth="614.0" style="-fx-background-color: rgba(100, 100, 100, 0.30); -fx-background-radius: 10;          -fx-border-radius: 10; -fx-border-color: transparent;" vbarPolicy="NEVER">
+         <HBox fx:id="HourlyForecast" alignment="CENTER_LEFT" spacing="10" style="          -fx-background-color: rgba(100, 100, 100, 0.30);  /* Very light gray */          -fx-background-radius: 10;          -fx-border-radius: 10;          -fx-border-color: #cccccc;          -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 3, 0.5, 0, 1);          " />
+      </ScrollPane>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#00000065" height="318.0" layoutX="14.0" layoutY="343.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="614.0" />
+      <Label layoutX="23.0" layoutY="338.0" prefHeight="66.0" prefWidth="115.0" text="Feels Like" textFill="WHITE">
+         <font>
+            <Font name="System Bold Italic" size="22.0" />
+         </font>
+      </Label>
+      <Label layoutX="321.0" layoutY="338.0" prefHeight="66.0" prefWidth="121.0" text="Humidity" textFill="WHITE">
+         <font>
+            <Font name="System Bold Italic" size="22.0" />
+         </font>
+      </Label>
+      <Label layoutX="20.0" layoutY="489.0" prefHeight="66.0" prefWidth="115.0" text="Wind Direction" textFill="WHITE" wrapText="true">
+         <font>
+            <Font name="System Bold Italic" size="22.0" />
+         </font>
+      </Label>
+      <Label layoutX="324.0" layoutY="489.0" prefHeight="66.0" prefWidth="115.0" text="Wind Speed" textFill="WHITE" wrapText="true">
+         <font>
+            <Font name="System Bold Italic" size="22.0" />
+         </font>
+      </Label>
+      <ImageView fx:id="wind_direction_img" fitHeight="108.0" fitWidth="137.0" layoutX="109.0" layoutY="537.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@images/right-arrow-icon-4.png" />
+         </image>
+      </ImageView>
+      <Label layoutX="158.0" layoutY="529.0" text="N" textFill="WHITE" />
+      <Label layoutX="225.0" layoutY="583.0" text="E" textFill="WHITE" />
+      <Label layoutX="158.0" layoutY="637.0" text="S" textFill="WHITE" />
+      <Label layoutX="105.0" layoutY="583.0" text="W" textFill="WHITE" />
+      <Label fx:id="feels_like_lbl" layoutX="114.0" layoutY="412.0" prefHeight="53.0" prefWidth="129.0" textFill="#fff9f9">
          <font>
             <Font size="36.0" />
          </font>
       </Label>
-      <ImageView fitHeight="72.0" fitWidth="56.0" layoutX="35.0" layoutY="47.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@images/38919.png" />
-         </image>
-      </ImageView>
-      <Rectangle arcHeight="30.0" arcWidth="30.0" fill="#8190a4e0" height="76.0" layoutX="220.0" layoutY="489.0" stroke="BLACK" strokeType="INSIDE" width="190.0" />
-      <Rectangle arcHeight="30.0" arcWidth="30.0" fill="#8190a4e0" height="76.0" layoutX="14.0" layoutY="489.0" stroke="BLACK" strokeType="INSIDE" width="190.0" />
-      <Rectangle arcHeight="30.0" arcWidth="30.0" fill="#8190a4e0" height="76.0" layoutX="220.0" layoutY="571.0" stroke="BLACK" strokeType="INSIDE" width="190.0" />
-      <Rectangle arcHeight="30.0" arcWidth="30.0" fill="#8190a4e0" height="76.0" layoutX="14.0" layoutY="571.0" stroke="BLACK" strokeType="INSIDE" width="190.0" />
-      <VBox fx:id="WeeklyForecast" layoutX="645.0" layoutY="156.0" prefHeight="412.0" prefWidth="236.0" />
-      <HBox fx:id="HourlyForecast" layoutX="10.0" layoutY="156.0" prefHeight="137.0" prefWidth="626.0" />
+      <Label fx:id="wind_speed_lbl" layoutX="392.0" layoutY="565.0" prefHeight="53.0" prefWidth="192.0" textFill="#fff9f9">
+         <font>
+            <Font size="36.0" />
+         </font>
+      </Label>
+      <Label fx:id="humidity_lbl" layoutX="392.0" layoutY="412.0" prefHeight="53.0" prefWidth="168.0" textFill="#fff9f9">
+         <font>
+            <Font size="36.0" />
+         </font>
+      </Label>
+      <ToggleButton fx:id="Conv_toggle_btn" layoutX="747.0" layoutY="11.0" mnemonicParsing="false" onAction="#ConvertMetrics" prefHeight="25.0" prefWidth="65.0" text="°F / mph" />
+      <Button layoutX="829.0" layoutY="11.0" mnemonicParsing="false" onAction="#ChangeZipCode" text="Edit" />
    </children>
 </AnchorPane>

@@ -12,10 +12,12 @@ import java.util.TreeMap;
 
 public class WeatherService {
 
+    private static String city;
+    private static String state;
     private static double latitude;
     private static double longitude;
 
-    private static String fetchData(String weatherApiUrl) throws Exception {
+    public static String fetchData(String weatherApiUrl) throws Exception {
 
         HttpURLConnection connection = (HttpURLConnection) new URL(weatherApiUrl).openConnection();
         connection.setRequestMethod("GET");
@@ -37,6 +39,9 @@ public class WeatherService {
         JSONObject zipJson = new JSONObject(zipResponse);
         JSONArray places = zipJson.getJSONArray("places");
         JSONObject place = places.getJSONObject(0);
+
+        city = place.getString("place name");
+        state = place.getString("state abbreviation");
         latitude = Double.parseDouble(place.getString("latitude"));
         longitude = Double.parseDouble(place.getString("longitude"));
 //        System.out.printf(
@@ -50,6 +55,7 @@ public class WeatherService {
                 "https://api.open-meteo.com/v1/forecast?latitude=%.4f&longitude=%.4f&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code&current=temperature_2m,weather_code,wind_speed_10m,wind_direction_10m,precipitation,relative_humidity_2m,apparent_temperature&timezone=America%%2FChicago",
                 latitude, longitude
         );
+        System.out.println(weatherApiUrl);
 
         String weatherResponse = fetchData(weatherApiUrl);
         JSONObject weatherJson = new JSONObject(weatherResponse);
@@ -60,6 +66,7 @@ public class WeatherService {
         int windDirection = currentWeather.getInt("wind_direction_10m");
         double humidity = currentWeather.getDouble("relative_humidity_2m");
         double feels_like = currentWeather.getDouble("apparent_temperature");
+        int current_weather_code = currentWeather.getInt("weather_code");
 
         //Taking out hourly information from the json file
         JSONObject hourlyForecastData = weatherJson.getJSONObject("hourly");
@@ -108,6 +115,8 @@ public class WeatherService {
             DailyWeatherMap.put(date, new DailyWeatherData(temp_min, temp_max, daily_code));
         }
 
-        return new WeatherData(temperature, windSpeed, windDirection, humidity, feels_like, hourlyWeatherMap, DailyWeatherMap);
+        return new WeatherData(city, state, temperature, current_weather_code, windSpeed, windDirection, humidity,
+                feels_like,
+                hourlyWeatherMap, DailyWeatherMap);
     }
 }

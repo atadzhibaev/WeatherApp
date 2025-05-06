@@ -19,7 +19,7 @@ public class WeatherConsoleApp {
             InetAddress localhost = InetAddress.getLocalHost();
 //            System.out.println("IP Address of your device: " + localhost.getHostAddress());
 //            String ip = "8.8.8.8";
-            URL url = new URL("http://ip-api.com/json/" + localhost.getHostAddress());
+            URL url = new URL("http://ip-api.com/json/");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
 

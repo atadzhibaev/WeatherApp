@@ -3,8 +3,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import java.io.IOException;
+import javafx.scene.image.Image;
 import java.util.Objects;
 
 public class MainApplication extends Application {
@@ -21,6 +20,8 @@ public class MainApplication extends Application {
 
         Scene scene = new Scene(loader);
         primaryStage.setScene(scene);
+        primaryStage.setTitle("Aziz's Weather Application");
+        primaryStage.getIcons().add(new Image("images/cloudy.png"));
         primaryStage.show();
     }
 }
