@@ -18,6 +18,7 @@ Upon starting the application, users are presented with a clean, visually-styled
 
 ![WeatherAppInterface](https://github.com/user-attachments/assets/dffadeda-b69f-4624-815c-3ef2860ffff5)
 
+![Weather App Screen Recording](src/images/screen-recording.gif)
 
 ## Backend Logic
 The backend logic of the application is split into several helper classes to ensure separation of concerns:
